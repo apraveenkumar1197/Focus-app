@@ -6,12 +6,49 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:local="clr-namespace:Focus_app"
         mc:Ignorable="d"
-        Title="Focus" Height="157.664" Width="356.569">
+        Title="Focus" Loaded="Window_Loaded" Height="530.5" Width="771">
 
-    <Grid>
-        <Button Margin="76,0,86,10" Content="OK" Height="36" VerticalAlignment="Bottom" Click="Button_Click" FontSize="25"/>
-        <Button Margin="0,0,10,10" Content="Quit" HorizontalAlignment="Right" Height="36" VerticalAlignment="Bottom" Width="57" Click="Button_Click_1" FontSize="25"/>
-        <TextBox Name="timeToAlarm" HorizontalAlignment="Left" Height="35" Margin="150,17,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="104" TextChanged="TextBox_TextChanged" FontSize="25"/>
-        <Label Content="Seconds :" HorizontalAlignment="Left" Margin="35,10,0,0" VerticalAlignment="Top" Width="115" FontSize="25"/>
-    </Grid>
+    <StackPanel Orientation="Vertical">
+        <Label Name="currentWorkingTaskNameLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" FontSize="40" FontWeight="Bold"/>
+        <StackPanel Orientation="Horizontal" Margin="10,10,10,10">
+            <Label Content="Seconds :" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="25" Height="42"/>
+            <TextBox  Name="timeToAlarm" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="104" TextChanged="TextBox_TextChanged" FontSize="25" Height="52"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10,10,10,10">
+            <Grid>
+                <Button Content="OK" Height="36" Click="Button_Click" FontSize="25" Margin="10,0,-632,0"/>
+                <Button Content="Quit" Height="36" Click="Button_Click_1" FontSize="25" Margin="692,0,-692,0"/>
+            </Grid>
+        </StackPanel>
+
+        <Expander IsExpanded="False" Expanded="Expander_Expanded">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Grid>
+                        <TextBox x:Name="addTaskText" TextChanged="TextBox_TextChanged" FontSize="25" Margin="0,0,-646,0"/>
+                        <Button Click="Button_Click_2" Grid.Column="0" Margin="710,0,-709,0">
+                            <StackPanel>
+                                <Image Source="assets/new-task.png" Height="32" Width="39"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Name="CurrentWorkBtn" Visibility="Collapsed" Click="CurrentWorkBtn_Click">
+                        <StackPanel>
+                            <Image Source="assets/current_work.png" Height="32" Width="39"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Name="TaskDoneBtn" Visibility="Collapsed" Click="TaskDoneBtn_Click">
+                        <StackPanel>
+                            <Image Source="assets/check.png" Height="32" Width="39"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <DataGrid Name="TasksListDataGrid" FontSize="20" SelectionChanged="TasksListDataGrid_SelectionChanged"/>
+                </StackPanel>
+            </StackPanel>
+        </Expander>
+    </StackPanel>
 </Window>

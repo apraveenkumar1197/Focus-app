@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Focus_app.poco;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Focus_app
 {
@@ -33,7 +35,6 @@ namespace Focus_app
             using (StreamReader sr = File.OpenText(fileName))
             {
                 milliSeconds = sr.ReadToEnd();
-
             }
             timeToAlarm.Text = milliSeconds.Remove(milliSeconds.Length - 3, 3);
         }
@@ -100,6 +101,68 @@ namespace Focus_app
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            Constants.db.addTask(addTaskText.Text);
+            loadTasksList();
+            addTaskText.Text = "";
+        }
+
+        void loadTasksList()
+        {
+            TasksListDataGrid.ItemsSource = null;
+            TasksListDataGrid.ItemsSource = Constants.db.getAllTasks();
+            TasksListDataGrid.Columns[2].Visibility = Visibility.Collapsed;
+            TasksListDataGrid.Columns[3].Visibility = Visibility.Collapsed;
+            
+        }
+        void loadCurrentTask()
+        {
+            poco.Task task = Constants.db.getCurrentTask();
+            currentWorkingTaskNameLabel.Content = task != null ? task.TaskName : "";
+        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            loadCurrentTask();
+        }
+
+        private void TasksListDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CurrentWorkBtn.Visibility = Visibility.Visible;
+            TaskDoneBtn.Visibility = Visibility.Visible;
+        }
+
+        private void CurrentWorkBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Constants.db.updateCurrentTask((poco.Task)TasksListDataGrid.SelectedItem);
+            CurrentWorkBtn.Visibility = Visibility.Collapsed;
+            TaskDoneBtn.Visibility = Visibility.Collapsed;
+            loadTasksList();
+        }
+
+        private void TaskDoneBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Constants.db.updateTaskDone((poco.Task)TasksListDataGrid.SelectedItem);
+            CurrentWorkBtn.Visibility = Visibility.Collapsed;
+            TaskDoneBtn.Visibility = Visibility.Collapsed;
+            loadTasksList();
+        }
+
+        private void Expander_Expanded(object sender, RoutedEventArgs e)
+        {
+           TaskEx.Delay(1000).ContinueWith(_ =>
+            {
+                
+            });
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1)};
+            timer.Start();
+            timer.Tick += (c,args) =>
+            {
+                timer.Stop();
+                loadTasksList();
+            };
         }
     }
 }
